@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { MdAddShoppingCart } from 'react-icons/md';
 import { formatPrice } from '../../util/format';
 import api from '../../services/api';
 
 import { ProductList } from './styles';
 
-export default class Home extends Component {
+class Home extends Component {
   state = {
     products: [],
   };
@@ -22,6 +23,16 @@ export default class Home extends Component {
     this.setState({ products: data });
   }
 
+  handleAddProduct = product => {
+    // connect envia o dispatch pelas props
+    const { dispatch } = this.props;
+
+    dispatch({
+      type: 'ADD_TO_CART',
+      product,
+    });
+  };
+
   render() {
     const { products } = this.state;
 
@@ -35,7 +46,11 @@ export default class Home extends Component {
 
             <button type="button">
               <div>
-                <MdAddShoppingCart size={16} color="#FFF" />
+                <MdAddShoppingCart
+                  size={16}
+                  color="#FFF"
+                  onClick={() => this.handleAddProduct(product)}
+                />
               </div>
 
               <span>ADICIONAR AO CARRINHO</span>
@@ -46,3 +61,6 @@ export default class Home extends Component {
     );
   }
 }
+// connect retorna uma funcao entao chamamos ela de novo passado
+// o component Home como parametro
+export default connect()(Home);
